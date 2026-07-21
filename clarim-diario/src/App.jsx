@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
-import { noticias } from './data/noticias'
 import Header from './components/Header/Header'
 import Home from './pages/Home/Home'
-import "./App.css"
+import Materia from './pages/Materia/Materia'
+import Cadastro from './pages/Cadastro/Cadastro'
+import Login from './pages/Login/Login'
+import RotaProtegida from './components/RotaProtegida'
+import Painel from './pages/Painel/Painel'
+import './App.css'
 
 function App() {
-  const [manchete, ...demais] = noticias
-  const [tema, setTema] = useState(() => {
+  const [ tema, setTema ] = useState(() => {
     const salvo = localStorage.getItem('tema') || 'light'
     if(salvo) return salvo
 
@@ -16,24 +19,32 @@ function App() {
 
     return 'light'
   })
-
-  function alterarTema (){
+  
+  function alternarTema() {
     setTema(t => (t === 'light' ? 'dark' : 'light'))
   }
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', tema) 
+    document.documentElement.setAttribute('data-theme', tema)
     localStorage.setItem('tema', tema)
   }, [tema])
 
-  return ( 
-  <>
-    <Header tema = {tema} aoAlterarTema={alterarTema} />
+  return (
+    <>
+      <Header tema={tema} aoAlternarTema={alternarTema} />
 
-    <Routes>
-      <Route path='/' element={<Home />} />
-    </Routes>
-  </>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/materia/:id" element={<Materia />} />
+        <Route path="/cadastro" element={<Cadastro />} />
+        <Route path="/login" element={<Login />} /> 
+        <Route path='/painel' element={
+          <RotaProtegida>
+            <Painel />
+          </RotaProtegida>
+        } />
+      </Routes>
+    </>
   )
 }
 
